@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>행복상점</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" th:href="@{/assets/favicon.ico}" href="assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .divider:after,
+        .divider:before {
+            content: "";
+            flex: 1;
+            height: 2px;
+            background: #1e2125;
+        }
+        .field-error-text{
+            color: orangered;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar bg-body-tertiary fixed-top">
+    <div class="container">
+        <span></span>
+        <!--        <a class="navbar-brand"></a>-->
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">바로가기</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#" th:href="@{/}" >홈</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                </ul>
+                <form class="d-flex mt-3" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="button" th:onclick="|location.href='@{/members/add}'|">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<section class="vh-100" style="background-color: #eee;">
+    <div class="container h-100" >
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-lg-12 col-xl-11">
+                <div class="card text-black" style="border-radius: 25px;">
+                    <div class="card-body p-md-5">
+                        <div class="row justify-content-around">
+
+                            <div class="row col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1">
+
+                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+                                     class="img-fluid" alt="Sample image">
+                            </div>
+
+                            <div class="row col-md-10 col-lg-6 col-xl-5 order-1">
+
+                                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4" th:text="#{page.login}">로그인</p>
+
+                                <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+                                    <p class="lead fw-normal mb-0 me-3" th:text="#{login.social}">Sign in with</p>
+                                    <button type="button" class="btn btn-primary btn-floating mx-1">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </button>
+
+                                    <button type="button" class="btn btn-primary btn-floating mx-1">
+                                        <i class="fab fa-twitter"></i>
+                                    </button>
+
+                                    <button type="button" class="btn btn-primary btn-floating mx-1">
+                                        <i class="fab fa-linkedin-in"></i>
+                                    </button>
+                                </div>
+
+                                <div class="divider d-flex align-items-center my-4">
+                                    <p class="text-center fw-bold mx-3 mb-0">Or</p>
+                                </div>
+
+                                <form class="mx-1 mx-md-4" action="" th:action th:object="${loginForm}" th:method="post">
+                                    <!-- Email input -->
+                                    <div class="form-outline mb-4">
+                                        <input type="text" id="loginId" th:field="*{loginId}" class="form-control form-control-lg"
+                                               placeholder="" th:placeholder="#{login.placeholder.id}" th:errorclass="field-error"/>
+                                        <p class="field-error-text" th:errors="*{loginId}">아이디 오류</p>
+                                    </div>
+
+                                    <!-- Password input -->
+                                    <div class="form-outline mb-3">
+                                        <input type="password" id="password" th:field="*{password}" class="form-control form-control-lg"
+                                               placeholder="" th:placeholder="#{login.placeholder.password}"  th:errorclass="field-error"/>
+                                        <p class="field-error-text" th:errors="*{password}">비밀번호 오류</p>
+                                    </div>
+
+                                    <div th:if="${#fields.hasGlobalErrors()}">
+                                        <p class="field-error-text" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
+                                    </div>
+
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <!-- Checkbox -->
+                                        <div class="form-check mb-0">
+                                            <input class="form-check-input me-2" type="checkbox" th:field="*{remember}" th:checked="false" value="" id="rememberMe" />
+                                            <label class="form-check-label" for="rememberMe" th:text="#{login.rememberme}">
+                                                Remember me
+                                            </label>
+                                        </div>
+                                        <a href="#!" th:href="@{/members/findPw}" class="text-body" th:text="#{login.forgotpw}">Forgot password?</a>
+                                    </div>
+
+                                    <div class="text-center text-lg-start mt-4 pt-2">
+                                        <button type="submit" class="btn btn-primary btn-lg"
+                                                style="padding-left: 2.5rem; padding-right: 2.5rem;" th:text="#{login.login}">Login</button>
+                                        <p class="small fw-bold mt-2 pt-1 mb-0" th:text="|#{login.register} |">Don't have an account?</p>
+                                        <a href="#" class="small fw-bold mt-2 pt-1 mb-0 link-danger" th:text="|#{login.register2}|" th:href="@{/members/add}">Register</a>
+                                    </div>
+                                </form>
+
+
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+</body>
+
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</html>

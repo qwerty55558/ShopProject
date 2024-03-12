@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>행복상점</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" th:href="@{/assets/favicon.ico}" href="assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+
+    </style>
+</head>
+<body style="background-color: #eee">
+
+<nav class="navbar bg-body-tertiary fixed-top">
+    <div class="container">
+        <span></span>
+        <!--        <a class="navbar-brand"></a>-->
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">바로가기</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#" th:href="@{/}" >홈</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                </ul>
+                <form class="d-flex mt-3" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="button" th:onclick="|location.href='@{/members/add}'|">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<section class="h-100" style="margin-top: 50px;">
+    <div class="container h-100 py-5">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-10">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-normal mb-0 text-black" th:text="#{cart.page.shoppingcart}">Shopping Cart</h3>
+                    <div>
+                        <select name="sort" id="sortItem" class="rounded-3">
+                            <option value="sort" th:text="#{cart.page.sort}"></option>
+                            <option class="level-0" value="price" th:text="#{cart.page.sort.price}"></option>
+                            <option class="level-0" value="star" th:text="#{cart.page.sort.star}"></option>
+                            <option class="level-0" value="sell" th:text="#{cart.page.sort.bestsell}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card rounded-3 mb-4" th:if="${itemList.isEmpty()}">
+                    <div class="card-body" style="padding-top: 100px;padding-bottom: 100px">
+                        <div class="text-center fw-bold" style="width:100%; font-size: xx-large">
+                            상품이 존재하지 않습니다.
+                        </div>
+                    </div>
+                </div>
+                <form th:action="|@{/order}]|" method="post">
+                <div class="card rounded-3 mb-4 cardClass" th:each="item : ${itemList}">
+                    <div class="card-body p-4">
+                        <div class="row d-flex justify-content-between align-items-center">
+                            <div class="col-md-2 col-lg-2 col-xl-2">
+                                <img
+                                        th:src="${itemInfo.get(item.getItemId()-1).getItemSrc()}" src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img1.webp"
+                                        class="img-fluid rounded-3" alt="Cotton T-shirt">
+                            </div>
+                            <div class="col-md-3 col-lg-3 col-xl-3">
+                                <p class="lead fw-normal mb-2" th:text="${itemInfo.get(item.getItemId()-1).getItemName()}"></p>
+                            </div>
+                            <div class="col-md-3 col-lg-3 col-xl-2 d-flex countZone" id="querySelectors">
+                                <a class="btn btn-link px-2 downButton">
+                                    <i class="fas fa-minus"></i>
+                                </a>
+
+                                <input th:name="itemId" th:value="${itemInfo.get(item.getItemId()-1).getItemId()}" hidden="hidden"/>
+                                <input hidden="hidden" th:name="cartId" th:value="${item.getCartId()}"/>
+                                <input id="form1" min="0" name="quantity" th:name="count" th:value="${item.getCount()}" value="0" type="number"
+                                       class="form-control form-control-sm countClass" readonly />
+                                <p hidden="hidden" class="itemIdInfo" th:text="${itemInfo.get(item.getItemId()-1).getItemId()}"></p>
+
+                                <a class="btn btn-link px-2 upButton">
+                                    <i class="fas fa-plus"></i>
+                                </a>
+                            </div>
+                            <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1 priceClass">
+                                <h5 class="mb-0 price" th:if="${itemInfo.get(item.getItemId()-1).isSale() == true}" th:text="${itemInfo.get(item.getItemId()-1).getPrice()} - ${(itemInfo.get(item.getItemId()-1).getPrice() * (itemInfo.get(item.getItemId()-1).getSalePercentage() * 0.01))}">$499.00</h5>
+
+                                <h5 class="mb-0 price" th:unless="${itemInfo.get(item.getItemId()-1).isSale() == true}" th:text="${itemInfo.get(item.getItemId()-1).getPrice()}">$499.00</h5>
+                            </div>
+                            <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                                <a class="text-danger deleteButton"><i class="fas fa-trash fa-lg"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="card mb-4">
+                    <div class="card-body p-4 d-flex flex-row">
+                        <div class="form-outline flex-fill">
+                            <label class="form-label text-lg-start fw-bold" for="form" th:text="#{cart.page.discountcode}">Discount code</label>
+                            <input type="text" id="form" class="form-control form-control-lg" />
+                        </div>
+                        <input type="text" id="saleCode" name="saleCode" value="" hidden="hidden"/>
+                        <button id="discountApply" type="button" class="btn btn-warning btn-lg ms-3" th:text="#{cart.page.discountapply}">Apply</button>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body p-4 d-flex flex-column" >
+                        <p class="text-start fw-bold" th:text="#{cart.page.price}"></p>
+                        <p id="resultPrice" class="text-center fw-bold" style="font-size: x-large"></p>
+                    </div>
+                </div>
+
+
+
+                <div class="card">
+                    <div class="card-body">
+                        <button type="submit" class="btn btn-warning btn-lg" style="width: 100%" th:text="#{cart.page.pay}">Proceed to Pay</button>
+                    </div>
+                </div>
+                </form>
+                <form id="deleteForm" th:action="|@{/item/cart/delete}|" method="post">
+                    <div class="deleteChecker" hidden="hidden">
+                        <input name="itemIdDelete" id="itemIdDelete" value="-1">
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+</body>
+
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+<!-- jquery -->
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<!-- CartService -->
+<script>
+let afterpriceinfo;
+$(document).ready(function (){
+    afterpriceinfo = getPriceInfo();
+    document.getElementById('resultPrice').innerText = priceInvalidate(afterpriceinfo).toString();
+})
+$('a.upButton').click(function () {
+    let numberInput = this.parentNode.querySelector('input[type=number]');
+    if (numberInput.value < 10) {
+        numberInput.stepUp();
+        afterpriceinfo = findIdIncrease(afterpriceinfo, numberInput.parentNode);
+        $('#resultPrice').text(priceInvalidate(afterpriceinfo).toString());
+    }
+});
+$('a.downButton').click(function (){
+    let numberInput = this.parentNode.querySelector('input[type=number]');
+    if (numberInput.value > 0) {
+        numberInput.stepDown();
+        afterpriceinfo = findIdDecrease(afterpriceinfo, numberInput.parentNode);
+        $('#resultPrice').text(priceInvalidate(afterpriceinfo).toString());
+    }
+});
+$('a.deleteButton').click(function (){
+    let element = this.parentNode.parentElement.querySelector('p.itemIdInfo');
+    afterpriceinfo = deleteItem(afterpriceinfo, element);
+    this.parentNode.parentNode.parentNode.parentElement.remove();
+    $('#resultPrice').text(priceInvalidate(afterpriceinfo).toString());
+});
+$('#discountApply').click(function (){
+    let code = checkDiscountCode(document.getElementById('form'));
+    if (code != null) {
+        $('#saleCode').val(code);
+    }else{
+        alert("일치하는 코드가 아닙니다.");
+        $('#saleCode').val("");
+    }
+});
+$('#sortItem').change(function () {
+    switch ($("#sortItem option:selected").val()) {
+        case 'price':
+            sortItemPrice();
+            break;
+        case 'star':
+            sortItemStar();
+            break;
+        case 'sell':
+            sortItemSell();
+            break;
+    }
+});
+
+function sortItemPrice(){
+    let filter = afterpriceinfo.sort((a,b) => a.price - b.price)
+    for (const filterElement of filter) {
+        alert(filterElement.price);
+    }
+}
+
+function sortItemStar(){
+    let filter = afterpriceinfo.sort((a,b) => a.star - b.star)
+    for (const filterElement of filter) {
+        alert(filterElement.star);
+    }
+}
+
+function sortItemSell(){
+    alert("API 개발 후 구현");
+    // let filter = afterpriceinfo.filter(v => {
+    //
+    // });
+}
+
+function deleteItem(elem, docClass) {
+    let val = docClass.textContent;
+    let filter = elem.filter(v => {
+        if (v.itemId !== parseInt(val)) {
+            return v;
+        }
+        else{
+            alert("상품이 삭제되었습니다.");
+            $('#itemIdDelete').attr('value', v.itemId);
+            $('#deleteForm').submit();
+        }
+    })
+    return filter;
+}
+
+
+function findIdIncrease(elem, docClass){
+    let priceInfo = elem;
+    let elementsByClassName = docClass.querySelector('p.itemIdInfo');
+        for (const priceInfoElement of priceInfo) {
+            let attribute = parseInt(elementsByClassName.textContent);
+            if (priceInfoElement.itemId === attribute) {
+                priceInfoElement.amounts += 1;
+                return priceInfo;
+            }
+        }
+}
+function findIdDecrease(elem, docClass){
+    let priceInfo = elem;
+    let elementsByClassName = docClass.querySelector('p.itemIdInfo');
+        for (const priceInfoElement of priceInfo) {
+            let attribute = parseInt(elementsByClassName.textContent);
+            if (priceInfoElement.itemId === attribute) {
+                priceInfoElement.amounts -= 1;
+                return priceInfo;
+            }
+        }
+}
+function priceInvalidate(elems){
+    let resultPrice = 0;
+    for (const elem of elems) {
+        if (elem.saleCheck) {
+            resultPrice += (elem.price - (elem.price * (elem.sale * 0.01))) * elem.amounts;
+        } else {
+            resultPrice += elem.price * elem.amounts;
+        }
+    }
+    return resultPrice;
+}
+
+</script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function getPriceInfo() {
+        let itemArray = [];
+        let itemInfo = {};
+        /*[# th:each="item : ${itemList}"]*/
+        itemInfo.price = /*[[${itemInfo.get(item.getItemId()-1).getPrice()}]]*/;
+        itemInfo.amounts = /*[[${item.getCount()}]]*/;
+        itemInfo.sale = /*[[${itemInfo.get(item.getItemId()-1).getSalePercentage()}]]*/;
+        itemInfo.saleCheck = /*[[${itemInfo.get(item.getItemId()-1).isSale()}]]*/;
+        itemInfo.itemId = /*[[${itemInfo.get(item.getItemId()-1).getItemId()}]]*/;
+        itemInfo.star = /*[[${itemInfo.get(item.getItemId()-1).getStarCount()}]]*/;
+        itemArray.push({...itemInfo});
+        /*[/]*/
+        return itemArray;
+    }
+
+    function checkDiscountCode(inputCode){
+        let textContent = document.getElementById('form').value;
+        let returnValue;
+        /*[# th:each="code : ${discountCode.codes}"]*/
+        if (textContent === /*[[${code}]]*/) {
+            returnValue = /*[[${code}]]*/;
+            alert("할인 코드가 적용되었습니다. : " + /*[[${code}]]*/);
+            return returnValue;
+        }
+        /*[/]*/
+        return null;
+    }
+    /*]]>*/
+</script>
+</html>

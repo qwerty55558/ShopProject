@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="test" th:each="order : ${orders}">
+    <p th:text="|OrderId = ${order.getOrderId()}|"></p>
+    <p th:text="|CardId = ${order.getCartId()}|"></p>
+    <p th:text="|ItemId = ${order.getItemId()}|"></p>
+    <p th:text="|Amount = ${order.getAmount()}|"></p>
+    <p th:text="|Price = ${order.getTotalPrice()}|"></p>
+    <br>
+</div>
+</body>
+</html>
